@@ -20,7 +20,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include('LittleLemonAPI.urls')),
-    path('api/users', include('djoser.urls')),
-    path('api/users/users/me', include('djoser.urls')),
+    path('api/', include('djoser.urls')),
+    path('api/', include('djoser.urls.authtoken')),
+    #path('api/users/', include('djoser.urls')),
+    #path('api/users/users/me/', include('djoser.urls')),
     path('token/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]   

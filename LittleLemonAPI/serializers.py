@@ -1,26 +1,49 @@
 from rest_framework import serializers
 from .models import MenuItem, Category, Cart, Order, OrderItem
+from django.contrib.auth.models import Group, User
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+       
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id','slug','title']
-        
+        fields = '__all__'
+
+class CategoryChoiceField(serializers.PrimaryKeyRelatedField):
+    def display_value(self, instance):
+        return instance.categorytitle
+    
+class MenuitemChoiceField(serializers.PrimaryKeyRelatedField):
+    def display_value(self, instance):
+        return instance.title
+    
 class MenuItemSerializer(serializers.ModelSerializer):
+    category = CategoryChoiceField(queryset=Category.objects.all())
     class Meta:
         model = MenuItem
-        fields = ['id', 'title', 'price', 'featured', 'category']
+        fields = '__all__'
 
 class CartSerializer(serializers.ModelSerializer):
+    menuitem = MenuitemChoiceField(queryset=MenuItem.objects.all())
     class Meta:
         model = Cart
-        fields = ['id', 'user', 'menuitem', 'quantity', 'unit_price','price']
+        fields = '__all__'
         
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['id', 'user', 'delivery crew', 'status', 'total', 'date']
+        fields = '__all__'
         
 class OrderItemSerializer(serializers.ModelSerializer):
+    menuitem = MenuitemChoiceField(queryset=MenuItem.objects.all())
     class Meta:
         model = OrderItem
-        fields = ['id', 'order', 'menuitem', 'quantity', 'unit_price', 'price']
+        fields = '__all__'

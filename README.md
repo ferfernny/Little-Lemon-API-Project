@@ -19,19 +19,22 @@ Users not assigned to a group will be considered customers.
 Here are all the required API routes for this project grouped into several categories.
 User registration and token generation endpoints 
 You can use Djoser in your project to automatically create the following endpoints and functionalities for you.
-attach the picture
+
+<img width="607" alt="Screenshot 2023-11-06 120425" src="https://github.com/ferfernny/Little-Lemon-API-Project/assets/86872329/e42fd5c2-563c-4bc3-be3d-3145221eca5d">
 
 #  Menu-items endpoints
-attach the picture
+<img width="410" alt="image" src="https://github.com/ferfernny/Little-Lemon-API-Project/assets/86872329/45a601f7-adff-4764-9276-55d3f51ffd4d">
+
 
 # User group management endpoints
-attach the picture
+<img width="461" alt="image" src="https://github.com/ferfernny/Little-Lemon-API-Project/assets/86872329/1e19c760-f414-4106-ba2b-1caa38d13d91">
 
 # Cart management endpoints 
-attach the picture
+<img width="603" alt="image" src="https://github.com/ferfernny/Little-Lemon-API-Project/assets/86872329/96453334-df8a-4912-93e0-e55cdbb826dd">
 
 # Order management endpoints
-attach the picture
+<img width="407" alt="image" src="https://github.com/ferfernny/Little-Lemon-API-Project/assets/86872329/7c892052-af1e-4fa7-ac23-03d05bf57582">
+
 
 # Additional step
 Implement proper filtering, pagination and sorting capabilities for /api/menu-items and /api/orders endpoints.

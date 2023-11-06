@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAdminUser
 from django.contrib.auth.models import User, Group
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
     
 class MenuItems(generics.ListCreateAPIView):
     queryset = MenuItem.objects.all()
@@ -172,7 +173,7 @@ class cart(generics.ListCreateAPIView, generics.DestroyAPIView):
         if queryset.exists():
             serializer = CartSerializer(queryset, many=True)  
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({'Message':'Please fill your menu-items into the cart'}, status=status.HTTP_200_OK)       
+        return Response({'Message':'Please fill your menu-items into the cart. This access is for customer'}, status=status.HTTP_200_OK)       
     def post(self, request, *args, **kwargs):
         if not request.user.groups.exists():
             serialized_item = CartSerializer(data=request.data)
@@ -189,51 +190,8 @@ class cart(generics.ListCreateAPIView, generics.DestroyAPIView):
                 return Response({"Message":"All menu items in the cart from current user has been deleted"}, status=status.HTTP_204_NO_CONTENT)
             return Response({"Message":"The menu item in the cart doesn't exists"}, status=status.HTTP_404_NOT_FOUND)
         return Response({"Message":"Unauthorized, This path is for Customer"}, status=status.HTTP_401_UNAUTHORIZED)
-        
-'''
-@api_view(['GET','POST'])
-def orders(request):
-    if request.user.groups.filter(name='Delivery Crew').exists():
-        if request.method == 'GET':
-            order_item = Order.objects.filter(user=request.user)
-            serializer = OrderSerializer(order_item, many=True)  
-            return Response(serializer.data, status=status.HTTP_200_OK)
-    elif request.user.groups.filter(name='Manager').exists():
-        if request.method == 'GET':
-            order_item = Order.objects.all()
-            serializer = OrderSerializer(order_item, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-    elif not request.user.groups.exists():
-        if request.method == 'GET':
-            order_item = Order.objects.filter(user=request.user)
-            serializer = OrderSerializer(order_item, many=True)  
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        elif request.method == 'POST':
-            OrderItem_Serializer = OrderItemSerializer(data=request.data)
-            if OrderItemSerializer.is_valid():
-                OrderItem = OrderItemSerializer.save()
-                CartItem = Cart.objects.filter(user=request.user).first()
-                if CartItem is not None:
-                    for cartItem in CartItem.all():
-                        OrderItemData = {
-                            'order': request.user,
-                            'menuitem': cartItem.menuitem,
-                            'quantity': cartItem.quantity,
-                            'unit_price': cartItem.unit_price,
-                            'price': cartItem.price
-                        }
-                        OrderItem_Serializer = OrderItemSerializer(data=OrderItemData)
-                        if OrderItem_Serializer.is_valid():
-                            OrderItem_Serializer.save()
-                            cartItem.delete()
-                        else:
-                            return Response(OrderItem_Serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                    return Response(OrderItem_Serializer.data, status=status.HTTP_201_CREATED)
-                else:
-                    return Response("No cart found for the user", status=status.HTTP_400_BAD_REQUEST)'''
 
 class Orders(generics.ListCreateAPIView):
-    serializer_class = OrderItemSerializer
     serializer_class = OrderSerializer
     def get(self, request, *args, **kwargs):
         if request.user.groups.filter(name='Delivery Crew').exists():
@@ -248,13 +206,40 @@ class Orders(generics.ListCreateAPIView):
         order_serializer = OrderSerializer(orders, many=True)
         order_item_serializer = OrderItemSerializer(order_items, many=True)
         data = {
-            'orders' : order_serializer.data,
-            'order_items': order_item_serializer.data
+            'Order' : order_serializer.data,
+            'OrderItem': order_item_serializer.data
         }
+        if not request.user.groups.exists(): 
+            if len(order_item_serializer.data) == 0:
+                return Response({'Message':'Please use POST method to move cart item to order item'}, status=status.HTTP_404_NOT_FOUND)
         return Response(data, status=status.HTTP_200_OK)
-    #def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
+        if not request.user.groups.exists():
+            user = self.request.user
+            CartItem = Cart.objects.filter(user=user)
+            orderitems = OrderItem.objects.filter(order=user)
+            if orderitems.exists():
+                orderitems.delete()
+            if not CartItem:
+                return Response({'Message': 'No cart items found for this user'}, status=status.HTTP_400_BAD_REQUEST)
+            for cartitem in CartItem:
+                OrderItemData = {
+                    'order': user,
+                    'menuitem': cartitem.menuitem,
+                    'quantity': cartitem.quantity,
+                    'unit_price': cartitem.unit_price,
+                    'price': cartitem.price
+                }
+                order_item = OrderItem.objects.create(**OrderItemData)
+            CartItem.delete()
+            serialized_item = OrderSerializer(data=request.data)
+            if serialized_item.is_valid():
+                serialized_item.save()  
+                return Response({'Message': 'Order and Order items created and cart items are deleted successfully'}, status=status.HTTP_201_CREATED)
+            return Response(serialized_item.errors, status=status.HTTP_400_BAD_REQUEST)
+             
             
-@api_view(['GET','PUT','PATCH','DELETE'])
+'''@api_view(['GET','PUT','PATCH','DELETE'])
 def singleorder(request, id):
     if not request.user.groups.exists():
         if request.method == 'GET':
@@ -284,8 +269,22 @@ def singleorder(request, id):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)'''
+
+class SingleOrder(generics.RetrieveUpdateDestroyAPIView):  
+    serializer_class = OrderSerializer   
+    def get(self, request, *args, **kwargs):
+        if not request.user.groups.exists():
+            order_id = kwargs.get('pk')
+            user = self.request.user
+            if Order.objects.filter(user=user, pk=order_id).exists():
+                order = Order.objects.get(pk=order_id)
+                order_serializer = OrderSerializer(order)
+                return Response(order_serializer.data, status=status.HTTP_200_OK)
+            return Response({"Message":"This order ID doesn't belong to the current user"}, status=status.HTTP_403_FORBIDDEN)
+        return Response({'Message':'This can be look by customer only, access denied'}, status=status.HTTP_403_FORBIDDEN)
+    def update(self, request, *args, **kwargs):
+        
 
         
         

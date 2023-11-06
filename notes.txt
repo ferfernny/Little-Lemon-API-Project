@@ -1,0 +1,23 @@
+**superuser**
+username: admin
+Password: 12345
+Email: admin@coursera.com
+ 
+ **Delivery crew**
+username: DeliveryCrew1
+Password: rosey111
+
+Username: fairy
+Password: Fairy12345
+
+
+**customer**
+username: customer1
+Password: jackandrose111
+
+Username: Jiraputch
+Password: Baifern_12345
+
+**Manager**
+username: Manager1
+Password: monkey111

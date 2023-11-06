@@ -1,5 +1,6 @@
 # Little-Lemon-API-Project
 This repository is mini project from APIs Django rest framework Coursera. start this project on October 2023
+
 **Note**: The idea and the scope of the project is from APIs coursera.
 
 # scope

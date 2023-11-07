@@ -282,9 +282,26 @@ class SingleOrder(generics.RetrieveUpdateDestroyAPIView):
                 order_serializer = OrderSerializer(order)
                 return Response(order_serializer.data, status=status.HTTP_200_OK)
             return Response({"Message":"This order ID doesn't belong to the current user"}, status=status.HTTP_403_FORBIDDEN)
-        return Response({'Message':'This can be look by customer only, access denied'}, status=status.HTTP_403_FORBIDDEN)
-    def update(self, request, *args, **kwargs):
-        
+        elif request.user.groups.filter(name='Manager').exists():
+            order_id = kwargs.get('pk')
+            order = Order.objects.get(pk=order_id)
+            order_serializer = OrderSerializer(order)
+            return Response(order_serializer.data, status=status.HTTP_200_OK)
+        elif request.user.groups.filter(name='Delivery crew').exists():
+            order_id = kwargs.get('pk')
+            user = self.request.user
+            if Order.objects.filter(delivery_crew=user, pk=order_id).exists():
+                order = Order.objects.get(pk=order_id)
+                order_serializer = OrderSerializer(order)
+                return Response(order_serializer.data, status=status.HTTP_200_OK)
+            return Response({"Message":"This order ID doesn't assigned to this delivery crew userid"}, status=status.HTTP_403_FORBIDDEN)
+    def delete(self, request, *args, **kwargs):
+        if request.user.groups.filter(name='Manager').exists():
+            order_id = kwargs.get('pk')
+            order = Order.objects.get(pk=order_id)
+            order.delete()
+            return Response({'Message':'Delete this user successfully'}, status=status.HTTP_200_OK)
+        return Response({'Message':'Only Manager group can delete the order'}, status=status.HTTP_403_FORBIDDEN)
 
         
         

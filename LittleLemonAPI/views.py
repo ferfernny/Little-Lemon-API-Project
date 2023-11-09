@@ -3,6 +3,7 @@ from .models import MenuItem, Cart, Order, OrderItem
 from .serializers import MenuItemSerializer, CartSerializer
 from .serializers import OrderSerializer, OrderItemSerializer
 from .serializers import GroupSerializer, UserSerializer
+from .serializers import OrderStatusSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -11,8 +12,10 @@ from django.contrib.auth.models import User, Group
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
+from django.core.paginator import Paginator, EmptyPage
+from rest_framework import viewsets 
     
-class MenuItems(generics.ListCreateAPIView):
+class MenuItems(viewsets.ModelViewSet):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
     def get(self, request, *args, **kwargs):
@@ -191,7 +194,7 @@ class cart(generics.ListCreateAPIView, generics.DestroyAPIView):
             return Response({"Message":"The menu item in the cart doesn't exists"}, status=status.HTTP_404_NOT_FOUND)
         return Response({"Message":"Unauthorized, This path is for Customer"}, status=status.HTTP_401_UNAUTHORIZED)
 
-class Orders(generics.ListCreateAPIView):
+class Orders(generics.ListCreateAPIView): 
     serializer_class = OrderSerializer
     def get(self, request, *args, **kwargs):
         if request.user.groups.filter(name='Delivery Crew').exists():
@@ -238,42 +241,15 @@ class Orders(generics.ListCreateAPIView):
                 return Response({'Message': 'Order and Order items created and cart items are deleted successfully'}, status=status.HTTP_201_CREATED)
             return Response(serialized_item.errors, status=status.HTTP_400_BAD_REQUEST)
              
-            
-'''@api_view(['GET','PUT','PATCH','DELETE'])
-def singleorder(request, id):
-    if not request.user.groups.exists():
-        if request.method == 'GET':
-            if Order.objects.filter(user=request.user, pk=id).exists():
-                order = OrderItem.objects.get(pk=id)
-                serializer = OrderItemSerializer(order)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                return Response({"Message":"This order ID doesn't belong to the current user"}, status=status.HTTP_403_FORBIDDEN)
-        elif request.method in ['PUT','PATCH']:
-            order = Order.objects.filter(user=request.user, pk=id)
-            if order.status == 0:    
-                print("I am here testing ka")
-                #Updates the order. A manager can use this endpoint to set a delivery crew to this order, and also update the order status to 0 or 1.
-                #If a delivery crew is assigned to this order and the status = 0, it means the order is out for delivery.
-                #If a delivery crew is assigned to this order and the status = 1, it means the order has been delivered.
-    elif request.user.groups.filter(name='Manager').exists():
-        if request.method == 'DELETE':
-            order = OrderItem.objects.get(pk=id)
-            order.delete()
-            return Response({'Message':"This order has been deleted"}, status=status.HTTP_204_NO_CONTENT)
-    elif request.user.groups.filter(name='Delivery crew'):
-        if request.method == 'PATCH':
-            order = OrderItem.objects.get(pk=id)
-            serializer = OrderSerializer(order, data=request.data, partial=True, fields=['status'])
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)'''
 
 class SingleOrder(generics.RetrieveUpdateDestroyAPIView):  
-    serializer_class = OrderSerializer   
+    serializer_class = OrderSerializer
     def get(self, request, *args, **kwargs):
+        try:
+            order_id = kwargs.get('pk')
+            order = Order.objects.get(pk=order_id)
+        except Order.DoesNotExist:
+            return Response({'Message':'Order does not exist'}, status=status.HTTP_404_NOT_FOUND)
         if not request.user.groups.exists():
             order_id = kwargs.get('pk')
             user = self.request.user
@@ -302,6 +278,27 @@ class SingleOrder(generics.RetrieveUpdateDestroyAPIView):
             order.delete()
             return Response({'Message':'Delete this user successfully'}, status=status.HTTP_200_OK)
         return Response({'Message':'Only Manager group can delete the order'}, status=status.HTTP_403_FORBIDDEN)
-
-        
+    def update(self, request, *args, **kwargs):
+        if request.user.groups.filter(name='Manager').exists():
+            order_id = kwargs.get('pk')
+            item = self.get_object(pk=order_id)
+            serializer_item = OrderSerializer(item, data=request.data)
+            if serializer_item.is_valid():
+                serializer_item.save()
+                return Response(serializer_item.data, status=status.HTTP_200_OK)
+            return Response(serializer_item.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'Message':'Only Manager group can update the entire table of order'}, status=status.HTTP_403_FORBIDDEN)
+    def patch(self, request, *args, **kwargs):
+        if request.user.groups.filter(name='Delivery crew').exists():
+            try:
+                order_id = kwargs.get('pk')
+                order = Order.objects.get(pk=order_id)
+            except Order.DoesNotExist:
+                return Response({'Message':'Order does not exist'}, status=status.HTTP_404_NOT_FOUND)
+            serializer = OrderStatusSerializer(order, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         

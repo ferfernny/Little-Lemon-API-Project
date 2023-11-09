@@ -3,7 +3,7 @@ from . import views
 from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
-    path('menu-items',views.MenuItems.as_view()),
+    path('menu-items',views.MenuItems.as_view({'get':'list'})),
     path('menu-items/<int:pk>',views.SingleMenuItem.as_view()),
     #User group management endpoints
     path('groups/manager/users', views.Managers.as_view()),

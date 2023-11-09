@@ -133,7 +133,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination','PAGE_SIZE':2
 }
 DEFAULT_FILTER_BACKENDS = [
     'django_filters.rest_framework.DjangoFilterBackend',
@@ -141,8 +142,6 @@ DEFAULT_FILTER_BACKENDS = [
     'rest_framework.filters.SearchFilter'
 ]
 
-DEFAULT_PAGINATION_CLASSES = 'rest_framework.pagination.PageNumberPagination'
-PAGE_SIZE = 2
 
 DEFAULT_THROTTLE_CLASSES = [
     'rest_framework.throttling.AnonRateThrottle',

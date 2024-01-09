@@ -22,7 +22,6 @@ urlpatterns = [
     path('api/',include('LittleLemonAPI.urls')),
     path('api/', include('djoser.urls')),
     path('api/', include('djoser.urls.authtoken')),
-    #path('api/users/', include('djoser.urls')),
-    #path('api/users/users/me/', include('djoser.urls')),
     path('token/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]   

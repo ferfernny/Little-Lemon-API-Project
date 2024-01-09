@@ -43,7 +43,16 @@ Implement proper filtering, pagination and sorting capabilities for /api/menu-it
 # Throttling
 Finally, apply some throttling for the authenticated users and anonymous or unauthenticated users.
 
+# The process to install and run server
+1. Clone a repository
+   
+![image](https://github.com/ferfernny/Little-Lemon-API-Project/assets/86872329/ca239fbc-012c-47b4-8825-fa7ab44b83c6)
 
+
+2. run server on the local
+  - run in python terminal
+
+![image](https://github.com/ferfernny/Playtorium-take-home/assets/86872329/5b18c2a0-e14f-4eb5-ad14-e953b5e19852)
 
 
 

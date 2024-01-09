@@ -71,3 +71,7 @@ Implement proper filtering, pagination and sorting capabilities for /api/menu-it
 # Throttling
 Finally, apply some throttling for the authenticated users and anonymous or unauthenticated users.
 
+# How to login by not using token
+   - this link can login by username and password.
+   - http://127.0.0.1:8000/accounts
+   - after login It will appeared Page not found (404), but it already login.

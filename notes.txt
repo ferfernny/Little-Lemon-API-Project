@@ -12,10 +12,10 @@ Password: Fairy12345
 
 
 **customer**
-username: customer1
+username: Customer1
 Password: jackandrose111
 
-Username: Jiraputch
+Username: jiraputch
 Password: Baifern_12345
 
 **Manager**

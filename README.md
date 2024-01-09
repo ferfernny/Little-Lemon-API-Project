@@ -54,7 +54,10 @@ Finally, apply some throttling for the authenticated users and anonymous or unau
 
 ![image](https://github.com/ferfernny/Playtorium-take-home/assets/86872329/5b18c2a0-e14f-4eb5-ad14-e953b5e19852)
 
-
+# Menu-Items
+   - This link can shoe menu-item of this restaurant
+   - http://127.0.0.1:8000/api/menu-items
+   - It also can be searched menu-items from id according to this link "http://127.0.0.1:8000/api/menu-items/id"
 
 
 

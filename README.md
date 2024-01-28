@@ -23,6 +23,7 @@ You will create one single Django app called LittleLemonAPI and implement all AP
 
 # Explore Web broswer in conclusion
    - http://127.0.0.1:8000/api/
+
 ![image](https://github.com/ferfernny/Little-Lemon-API-Project/assets/86872329/9f668137-ec02-4c20-a095-0050ea18b52e)
 
 # User groups

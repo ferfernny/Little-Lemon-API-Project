@@ -21,6 +21,10 @@ You will create one single Django app called LittleLemonAPI and implement all AP
 
 ![image](https://github.com/ferfernny/Playtorium-take-home/assets/86872329/5b18c2a0-e14f-4eb5-ad14-e953b5e19852)
 
+# Explore Web broswer in conclusion
+   - http://127.0.0.1:8000/api/
+![image](https://github.com/ferfernny/Little-Lemon-API-Project/assets/86872329/9f668137-ec02-4c20-a095-0050ea18b52e)
+
 # User groups
 Create the following two user groups and then create some random users and assign them to these groups from the Django admin panel. 
 - Manager

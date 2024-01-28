@@ -1,0 +1,39 @@
+<!-- logout.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout</title>
+</head>
+<body>
+
+    <h2>Logout</h2>
+
+    <p>Are you sure you want to logout?</p>
+
+    <a href="#" class="logout-link" onclick="logout()">
+        Log out
+    </a>
+
+    <script>
+        function logout() {
+            var form = document.createElement("form");
+            form.method = "post";
+            form.action = "{% url 'logout' %}";
+
+            var csrfInput = document.createElement("input");
+            csrfInput.type = "hidden";
+            csrfInput.name = "{% csrf_token_token %}";  // Use the CSRF token template tag
+            csrfInput.value = "{% csrf_token %}";
+
+            form.appendChild(csrfInput);
+            document.body.appendChild(form);
+
+            form.submit();
+        }
+    </script>
+
+</body>
+</html>

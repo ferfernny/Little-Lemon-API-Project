@@ -1,0 +1,45 @@
+{% load static %}
+<style>
+    /* Add custom styles for the login link */
+    .login-link {
+        color: white;
+        background-color: rgb(2, 48, 32);
+        padding: 5px 10px;  /* Add padding for better visual appearance */
+        border-radius: 10px; /*Add border-radius for rounded corners */
+        text-decoration: none; /* Remove default underline for links */
+        position: absolute; /* Set the position to fixed */
+        top: 10px; /* Adjust the top position */
+        right: 10px; /* Adjust the right position */
+    }
+    .logout-link {
+        position: absolute; /* Set the position to fixed */
+        top: 44px; /* Adjust the top position */
+        right: 20px; /* Adjust the right position */
+    }
+</style>
+<p>
+    <!-- Apply the custom styles to the login link -->
+    <a href="{% url 'login' %}" class="login-link">
+        {% if user.is_authenticated %}
+            username : {{ user }}
+        {% else %}
+            Log in
+        {% endif %}
+    </a>
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'logout' %}" class="logout-link">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">
+                Log out
+            </button>
+        </form>
+    {% endif %}
+</p>
+<header>
+  <img src="{% static 'img/logo.png' %}" />
+</header>
+<nav>
+  <ul>
+    <li><a href="{% url 'home' %}">Home</a></li>
+  </ul>
+</nav>

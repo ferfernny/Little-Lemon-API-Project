@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+<style>
+    .image {
+        max-width: 20px; /* Set a maximum width if needed */
+        max-height: 1px; /* Set a maximum height if needed */
+    }    
+</style>
+{% block content %}
+<section>
+    <article id="hero">
+      <h1 class="heading_shadow">SPECIAL OFFER</h1>
+      <p>
+        30% Off This Weekend 
+      </p>
+      <a href="#" class="cta"> Book now </a>
+    </article>
+  </section>
+  <section>
+    <article>
+      <h2>Menu Items</h2>
+      <img src="{% static 'img/menu_items.jpeg' %}" style="width: 100%; height: auto; max-width: 300px; max-height: 200px;">
+      <p>
+        Our menu consists of 12-15 seasonal items based on American and japanese culture.
+      </p>
+      <p>
+        <a href="{% url 'menu' %}">See our menu-items</a>
+      </p>
+    </article>
+    <article>
+      <h2>Cart</h2>
+      <img src="{% static 'img/cart3.jpeg' %}" style="width: 100%; height: auto; max-width: 300px; max-height: 200px;">
+      <p>
+        Cart management. Add, get and delete the menu-items from the cart.
+      </p>
+      <p>
+        <a href="{% url 'cart' %}">See your cart</a>
+      </p>
+    </article>
+    <article>
+      <h2>Order</h2>
+      <img src="{% static 'img/order.jpeg' %}" style="width: 300px; height: 100px; max-width: 400px; max-height: 1000px; background-color: white; display: block; position: relative; top: 50px; left: 10px; "">
+        <div style="position: absolute; top: 785px; left: 800px; z-index: 1;">
+            <p>Order management.</p>
+        </div>
+        <div style="position: absolute; top: 870px; left: 800px; z-index: 1;">
+            <p>
+                <a href="{% url 'orders' %}">See your orders</a>
+            </p>
+        </div>
+    </article>
+  </section>
+{% endblock %}

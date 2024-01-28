@@ -14,7 +14,15 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from django.core.paginator import Paginator, EmptyPage
 from rest_framework import viewsets 
-    
+
+def home(request):
+    return render(request, 'index.html')
+
+def menu(request):
+    menu_data = MenuItem.objects.all()
+    main_data = {"menu":menu_data}
+    return render(request, 'menu.html', main_data)
+
 class MenuItems(viewsets.ModelViewSet):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
@@ -148,7 +156,7 @@ class DeleteDeliveryCrew(generics.RetrieveAPIView, generics.DestroyAPIView):
                 DeliveryCrewGroup = Group.objects.get(name='Delivery crew')
                 if user in DeliveryCrewGroup.user_set.all():
                     return Response({'Delivery crew user': user.username}, status=status.HTTP_200_OK)
-                return Response({'Message':'This user is not in delivery crew group'}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'Message':'This user is not in Delivery crew group'}, status=status.HTTP_404_NOT_FOUND)
             except User.DoesNotExist:
                 return Response({'Message':'User not found'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'Message':'This user group has unauthorized access'})
@@ -197,9 +205,9 @@ class cart(generics.ListCreateAPIView, generics.DestroyAPIView):
 class Orders(generics.ListCreateAPIView): 
     serializer_class = OrderSerializer
     def get(self, request, *args, **kwargs):
-        if request.user.groups.filter(name='Delivery Crew').exists():
+        if request.user.groups.filter(name='Delivery crew').exists():   #stuck
             orders = Order.objects.filter(delivery_crew=request.user)
-            order_items = OrderItem.objects.filter(order__user=F('order'))
+            order_items = OrderItem.objects.filter(OrderItem.order=orders.user)
         elif request.user.groups.filter(name='Manager').exists():
             orders = Order.objects.all()
             order_items = OrderItem.objects.all()
@@ -221,8 +229,6 @@ class Orders(generics.ListCreateAPIView):
             user = self.request.user
             CartItem = Cart.objects.filter(user=user)
             orderitems = OrderItem.objects.filter(order=user)
-            if orderitems.exists():
-                orderitems.delete()
             if not CartItem:
                 return Response({'Message': 'No cart items found for this user'}, status=status.HTTP_400_BAD_REQUEST)
             for cartitem in CartItem:
@@ -270,7 +276,7 @@ class SingleOrder(generics.RetrieveUpdateDestroyAPIView):
                 order = Order.objects.get(pk=order_id)
                 order_serializer = OrderSerializer(order)
                 return Response(order_serializer.data, status=status.HTTP_200_OK)
-            return Response({"Message":"This order ID doesn't assigned to this delivery crew userid"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"Message":"This order ID doesn't assigned to this Delivery crew userid"}, status=status.HTTP_403_FORBIDDEN)
     def delete(self, request, *args, **kwargs):
         if request.user.groups.filter(name='Manager').exists():
             order_id = kwargs.get('pk')

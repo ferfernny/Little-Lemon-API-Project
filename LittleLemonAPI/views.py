@@ -207,7 +207,7 @@ class Orders(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         if request.user.groups.filter(name='Delivery crew').exists():   #stuck
             orders = Order.objects.filter(delivery_crew=request.user)
-            order_items = OrderItem.objects.filter(OrderItem.order=orders.user)
+            order_items = OrderItem.objects.filter(OrderItem.order==orders.user)
         elif request.user.groups.filter(name='Manager').exists():
             orders = Order.objects.all()
             order_items = OrderItem.objects.all()

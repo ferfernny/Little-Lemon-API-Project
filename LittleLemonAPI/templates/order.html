@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>Order</h1>
+<!--Begin col-->
+<div class="column">
+    <!-- Step 14: Create for loop -->
+    <p>
+        <a href="{% url 'orders' %}">See all of orders and order-items</a>
+    </p>
+    {% for item in order %}
+    <p>
+        <!-- Step 14: Add DTL variable for name -->
+        <a href="{% url 'orders_id' pk=item.id %}">Order No. {{ item.id }} : {{item.user}}</a>
+        <!-- Step 14: Add DTL variable for price -->
+    </p>
+    {% endfor %}
+    <!-- Step 14: End or loop -->
+</div>
+<!--End col-->
+{% endblock %}

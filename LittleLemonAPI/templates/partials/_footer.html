@@ -1,9 +1,22 @@
 {% load static %}
+<style>
+    .manager-link {
+        color: white;
+        background-color: rgb(2, 48, 32);
+        padding: 27px 5px;  /* Add padding for better visual appearance */
+        border-radius: 10px; /*Add border-radius for rounded corners */
+        text-decoration: none; /* Remove default underline for links */
+        position: sticky; /* Set the position to fixed */
+        bottom: 5px; /* Adjust the top position */
+        right: 5px; /* Adjust the right position */
+    }
+</style>
 <footer>
     <article>
         <img src="{% static 'img/logo_footer.png' %}"/>
-    </article>
+    </article> 
     <article>
         <p>Copyright Little Lemon </p>
     </article>
+    <a href="{% url 'manager_view' %}" class="manager-link">Manager view</a>
 </footer>

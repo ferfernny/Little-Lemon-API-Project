@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>Manager view</h1>
+<div class="column">
+    <h2>
+        <a href="{% url 'users_manager' %}">See all of manager users</a>
+    </h2>
+    {% for user in manager %}
+    <p>
+        <a href="{% url 'userid_manager' pk=user.id %}">Manger user id. {{ user.id }} : {{user.username}}</a>
+    </p>
+    {% endfor %}
+    <h2>
+        <a href="{% url 'users_manager' %}">See all of delivery crew users</a>
+    </h2>
+    {% for user in delivery_crew %}
+    <p>
+        <a href="{% url 'userid_delivery_crew' pk=user.id %}">delivery crew user id. {{ user.id }} : {{user.username}}</a>
+    </p>
+    {% endfor %}
+</div>
+{% endblock %}

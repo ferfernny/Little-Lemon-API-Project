@@ -23,6 +23,12 @@ def menu(request):
     main_data = {"menu":menu_data}
     return render(request, 'menu.html', main_data)
 
+def manager(request):
+    manager_data = User.objects.filter(groups__name="Manager")
+    delivery_crew_data = User.objects.filter(groups__name="Delivery crew")
+    main_data = {"manager" : manager_data, "delivery_crew" : delivery_crew_data}
+    return render(request, 'manager_view.html', main_data)
+
 def order(request):
     order_data = Order.objects.all()
     main_data = {"order":order_data}

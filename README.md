@@ -79,5 +79,4 @@ Finally, apply some throttling for the authenticated users and anonymous or unau
 # How to login and logout by not using token
    - this link can login by username and password.
    - http://127.0.0.1:8000/accounts/login/
-   - after login It will appear Page not found (404), but it already login.
    - you can log out from your username by this link http://127.0.0.1:8000/accounts/logout/

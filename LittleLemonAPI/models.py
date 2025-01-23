@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-# Create your models here.
 
 class Category(models.Model):
     slug = models.SlugField()
@@ -10,11 +9,11 @@ class MenuItem(models.Model):
     title = models.CharField(max_length=255, db_index=True)
     price = models.DecimalField(max_digits=6, decimal_places=2, db_index=True)
     featured = models.BooleanField(db_index=True)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT)    #If Category is deleted, Django will raise an error and prevent the deletion.
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)    
     
-class Cart(models.Model):   #fill menu-item in the cart before order the food
+class Cart(models.Model):   
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    menuitem = models.ForeignKey(MenuItem, on_delete=models.CASCADE)   #if class MenuItem is deleted, menuitems is also deleted
+    menuitem = models.ForeignKey(MenuItem, on_delete=models.CASCADE)  
     quantity = models.SmallIntegerField()
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
     price = models.DecimalField(max_digits=6, decimal_places=2,default=0.0)

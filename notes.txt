@@ -15,9 +15,6 @@ Password: Fairy12345
 username: Customer1
 Password: jackandrose111
 
-Username: jiraputch
-Password: Baifern_12345
-
 **Manager**
 username: Manager1
 Password: monkey111
